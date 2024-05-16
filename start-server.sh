@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Comprovar si ja hi ha un servidor en marxa
+if ps aux | grep -v grep | grep server.py > /dev/null
+then
+    echo "Ja hi ha un servidor en marxa."
+    exit 1
+fi
+
 # Obtenir port del servidor
 port=50000
 while true
@@ -25,5 +32,5 @@ PROTO_ABS_DIR=$(realpath "./proto")
 export PYTHONPATH="$PROTO_ABS_DIR:$PYTHONPATH"
 
 # Engegar servidor
-gnome-terminal --title="SERVER" -- python3 server/server.py 2> /dev/null
+gnome-terminal --title="SERVER" -- python3 server/server.py --port $port  2> /dev/null
 #python3 server/server.py

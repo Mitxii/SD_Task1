@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+message Message {
+    string username = 1;
+    string body = 2;
+}
+
+message Client {
+    string username = 1;
+}
+
+message Empty {}
+
+service ChatServer {
+    rpc SendMessage(Message) returns (Empty) {}
+    rpc ReceiveMessage(Client) returns (Message) {}
+}
