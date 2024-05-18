@@ -55,8 +55,32 @@ time.sleep(0.5)
 os.system('cls' if os.name == 'nt' else 'clear')
 os.system(f"echo 'Bones, \033[33m{username}\\033]0;{username}\\007\033[0m!'")
 
-# Netejar terminal
-os.system('cls' if os.name == 'nt' else 'clear')
+# Bucle principal del client
+while True:
+    print("\nQuè vols fer?")
+    print("    1. Iniciar chat privat")
+    print("    2. Subscriure a chat grupal")
+    print("    3. Descobrir chats")
+    print("    4. Accedir al canal d'insults")
+    print("    5. Sortir")
+
+    option = input("Opció: ")
+    print()
+
+    if option == "1":
+        other = input("Quin és el nom d'usuari de l'altre client? ")
+        pass
+    elif option == "2":
+        pass
+    elif option == "3":
+        pass
+    elif option == "4":
+        pass
+    elif option == "5":
+        print("Fins aviat " + colorama.Fore.YELLOW + f"{username}" + colorama.Fore.RESET + "!")
+        break
+    else:
+        print(colorama.Fore.RED + "Opció invàlida. Tria una de vàlida." + colorama.Fore.RESET)
 
 # Iniciar chat (enviar i llegir missatges)
 threading.Thread(target=client.send_message).start()
