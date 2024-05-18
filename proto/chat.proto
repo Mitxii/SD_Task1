@@ -1,17 +1,25 @@
 syntax = "proto3";
 
+message Client {
+    string username = 1;
+    string ip = 2;
+    int32 port = 3;
+}
+
+message Boolean {
+    bool bool = 1;
+}
+
 message Message {
     string username = 1;
     string body = 2;
 }
 
-message Client {
-    string username = 1;
-}
-
 message Empty {}
 
 service ChatServer {
+    rpc RegisterClient(Client) returns (Boolean) {}
+
     rpc SendMessage(Message) returns (Empty) {}
     rpc ReceiveMessage(Client) returns (Message) {}
 }

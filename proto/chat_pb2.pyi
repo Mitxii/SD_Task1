@@ -4,6 +4,22 @@ from typing import ClassVar as _ClassVar, Optional as _Optional
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
+class Client(_message.Message):
+    __slots__ = ("username", "ip", "port")
+    USERNAME_FIELD_NUMBER: _ClassVar[int]
+    IP_FIELD_NUMBER: _ClassVar[int]
+    PORT_FIELD_NUMBER: _ClassVar[int]
+    username: str
+    ip: str
+    port: int
+    def __init__(self, username: _Optional[str] = ..., ip: _Optional[str] = ..., port: _Optional[int] = ...) -> None: ...
+
+class Boolean(_message.Message):
+    __slots__ = ("bool",)
+    BOOL_FIELD_NUMBER: _ClassVar[int]
+    bool: bool
+    def __init__(self, bool: bool = ...) -> None: ...
+
 class Message(_message.Message):
     __slots__ = ("username", "body")
     USERNAME_FIELD_NUMBER: _ClassVar[int]
@@ -11,12 +27,6 @@ class Message(_message.Message):
     username: str
     body: str
     def __init__(self, username: _Optional[str] = ..., body: _Optional[str] = ...) -> None: ...
-
-class Client(_message.Message):
-    __slots__ = ("username",)
-    USERNAME_FIELD_NUMBER: _ClassVar[int]
-    username: str
-    def __init__(self, username: _Optional[str] = ...) -> None: ...
 
 class Empty(_message.Message):
     __slots__ = ()
