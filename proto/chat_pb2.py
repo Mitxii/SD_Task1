@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10proto/chat.proto\"4\n\x06\x43lient\x12\x10\n\x08username\x18\x01 \x01(\t\x12\n\n\x02ip\x18\x02 \x01(\t\x12\x0c\n\x04port\x18\x03 \x01(\x05\"\x17\n\x07\x42oolean\x12\x0c\n\x04\x62ool\x18\x01 \x01(\x08\")\n\x07Message\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x0c\n\x04\x62ody\x18\x02 \x01(\t\"\x07\n\x05\x45mpty2}\n\nChatServer\x12%\n\x0eRegisterClient\x12\x07.Client\x1a\x08.Boolean\"\x00\x12!\n\x0bSendMessage\x12\x08.Message\x1a\x06.Empty\"\x00\x12%\n\x0eReceiveMessage\x12\x07.Client\x1a\x08.Message\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10proto/chat.proto\"4\n\x06\x43lient\x12\x10\n\x08username\x18\x01 \x01(\t\x12\n\n\x02ip\x18\x02 \x01(\t\x12\x0c\n\x04port\x18\x03 \x01(\x05\">\n\x11\x43onnectionRequest\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x17\n\x0fothers_username\x18\x02 \x01(\t\")\n\x07\x42oolean\x12\x0c\n\x04\x64one\x18\x01 \x01(\x08\x12\x10\n\x08response\x18\x02 \x01(\t\"H\n\rAnswerRequest\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x17\n\x0fothers_username\x18\x02 \x01(\t\x12\x0c\n\x04\x62ool\x18\x03 \x01(\x08\"\x18\n\x08Response\x12\x0c\n\x04text\x18\x01 \x01(\t\")\n\x07Message\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x0c\n\x04\x62ody\x18\x02 \x01(\t\">\n\x0bSendMessage\x12\x0f\n\x07\x63hat_id\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\x12\x0c\n\x04\x62ody\x18\x03 \x01(\t\"3\n\x0eReceiveMessage\x12\x0f\n\x07\x63hat_id\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\"\x07\n\x05\x45mpty2\x97\x02\n\nChatServer\x12%\n\x0eRegisterClient\x12\x07.Client\x1a\x08.Boolean\"\x00\x12-\n\x0b\x43onnectChat\x12\x12.ConnectionRequest\x1a\x08.Boolean\"\x00\x12\'\n\x11ListenConnections\x12\x07.Client\x1a\x07.Client\"\x00\x12.\n\x10\x41nswerConnection\x12\x0e.AnswerRequest\x1a\x08.Boolean\"\x00\x12\'\n\rSendMessageTo\x12\x0c.SendMessage\x1a\x06.Empty\"\x00\x12\x31\n\x12ReceiveMessageFrom\x12\x0f.ReceiveMessage\x1a\x08.Message\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -23,12 +23,22 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
   _globals['_CLIENT']._serialized_start=20
   _globals['_CLIENT']._serialized_end=72
-  _globals['_BOOLEAN']._serialized_start=74
-  _globals['_BOOLEAN']._serialized_end=97
-  _globals['_MESSAGE']._serialized_start=99
-  _globals['_MESSAGE']._serialized_end=140
-  _globals['_EMPTY']._serialized_start=142
-  _globals['_EMPTY']._serialized_end=149
-  _globals['_CHATSERVER']._serialized_start=151
-  _globals['_CHATSERVER']._serialized_end=276
+  _globals['_CONNECTIONREQUEST']._serialized_start=74
+  _globals['_CONNECTIONREQUEST']._serialized_end=136
+  _globals['_BOOLEAN']._serialized_start=138
+  _globals['_BOOLEAN']._serialized_end=179
+  _globals['_ANSWERREQUEST']._serialized_start=181
+  _globals['_ANSWERREQUEST']._serialized_end=253
+  _globals['_RESPONSE']._serialized_start=255
+  _globals['_RESPONSE']._serialized_end=279
+  _globals['_MESSAGE']._serialized_start=281
+  _globals['_MESSAGE']._serialized_end=322
+  _globals['_SENDMESSAGE']._serialized_start=324
+  _globals['_SENDMESSAGE']._serialized_end=386
+  _globals['_RECEIVEMESSAGE']._serialized_start=388
+  _globals['_RECEIVEMESSAGE']._serialized_end=439
+  _globals['_EMPTY']._serialized_start=441
+  _globals['_EMPTY']._serialized_end=448
+  _globals['_CHATSERVER']._serialized_start=451
+  _globals['_CHATSERVER']._serialized_end=730
 # @@protoc_insertion_point(module_scope)

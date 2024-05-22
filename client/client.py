@@ -5,13 +5,14 @@ import argparse
 import os
 import threading
 import time
+import subprocess
 
 # Importar classes generades
 from proto import chat_pb2
 from proto import chat_pb2_grpc
 
 # Importar altres classes
-import client_class
+from client_class import Client
 
 # Inicialitzar biblioteca de colors per la terminal
 colorama.init()
@@ -41,47 +42,43 @@ while True:
 
     # Registrar client
     response = stub.RegisterClient(chat_pb2.Client(username=username, ip=ip, port=port))
-    if response.bool:
+    if response.done:
         print(colorama.Fore.GREEN + "T'has registrat correctament." + colorama.Fore.RESET)
         break
     else:
-        print(colorama.Fore.RED + "Aquest nom d'usuari ja està en ús actualment. Prova amb un altre." + colorama.Fore.RESET)
+        print(colorama.Fore.RED + response.response + colorama.Fore.RESET)
 
 # Crear client
-client = client_class.Client(username, ip, port, stub)
+client = Client(username, ip, port, stub)
 
 # Esperar un segon i netejar terminal
 time.sleep(0.5)
 os.system('cls' if os.name == 'nt' else 'clear')
 os.system(f"echo 'Bones, \033[33m{username}\\033]0;{username}\\007\033[0m!'")
 
+# Escoltar peticions de chats privats
+threading.Thread(target=client.listen_connections).start()
+
 # Bucle principal del client
+print(f"\n\t{colorama.Back.YELLOW}{colorama.Fore.BLACK} [P]rivat | [G]rupal | [D]escobrir | [I]nsults | [S]ortir {colorama.Back.RESET}{colorama.Fore.RESET}\n")
 while True:
-    print("\nQuè vols fer?")
-    print("    1. Iniciar chat privat")
-    print("    2. Subscriure a chat grupal")
-    print("    3. Descobrir chats")
-    print("    4. Accedir al canal d'insults")
-    print("    5. Sortir")
+    option = input("Opció: ").upper()
 
-    option = input("Opció: ")
-    print()
-
-    if option == "1":
-        other = input("Quin és el nom d'usuari de l'altre client? ")
+    if option == "P":
+        threading.Thread(target=client.connect_chat).start()
         pass
-    elif option == "2":
+    elif option == "G":
         pass
-    elif option == "3":
+    elif option == "D":
         pass
-    elif option == "4":
+    elif option == "I":
         pass
-    elif option == "5":
+    elif option == "S":
         print("Fins aviat " + colorama.Fore.YELLOW + f"{username}" + colorama.Fore.RESET + "!")
         break
     else:
-        print(colorama.Fore.RED + "Opció invàlida. Tria una de vàlida." + colorama.Fore.RESET)
-
+        print(colorama.Fore.RED + "Opció invàlida. Tria'n una de vàlida." + colorama.Fore.RESET)
+        
 # Iniciar chat (enviar i llegir missatges)
 threading.Thread(target=client.send_message).start()
 threading.Thread(target=client.receive_message).start()

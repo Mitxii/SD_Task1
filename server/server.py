@@ -1,5 +1,6 @@
 import grpc
 import argparse
+import uuid
 from concurrent import futures
 import time
 
@@ -10,7 +11,8 @@ from server_log import ServerLog
 
 # Importar altres classes
 from name_server import name_server
-from private_chat import private_chat
+from message_broker import message_broker
+import private_chat
 
 # Crear l'analitzador d'arguments
 parser = argparse.ArgumentParser()
@@ -26,15 +28,29 @@ class ServerServicer(chat_pb2_grpc.ChatServerServicer):
         self.logger = ServerLog(self)
         
     def RegisterClient(self, client, context):
-        boolean = name_server.register_client(client)
-        return chat_pb2.Boolean(bool=boolean)
+        response = name_server.register_client(client)
+        return chat_pb2.Boolean(done=response[0], response=response[1])
 
-    def SendMessage(self, message, context):
-        private_chat.send_message(message)
+    def ConnectChat(self, request, context):
+        response = message_broker.connect_chat(request)
+        if "id=" in response:
+            return chat_pb2.Boolean(done=True, response=response.split("=")[1])
+        return chat_pb2.Boolean(done=False, response=response)
+    
+    def ListenConnections(self, request, context):
+        username = message_broker.listen_connections(request)
+        return chat_pb2.Client(username=username)
+    
+    def AnswerConnection(self, request, context):
+        response = message_broker.answer_connection(request)
+        return chat_pb2.Boolean(response=response)
+
+    def SendMessageTo(self, send, context):
+        message_broker.send_message_to(send=send)
         return chat_pb2.Empty()
     
-    def ReceiveMessage(self, client, context):
-        message = private_chat.receive_message(client)
+    def ReceiveMessageFrom(self, receive, context):
+        message = message_broker.receive_message_from(receive)
         response = chat_pb2.Message(username="")
         if message != "":
             response.username = message.username

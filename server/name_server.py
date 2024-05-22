@@ -21,13 +21,16 @@ class NameServer:
         
     # Funció per registrar l'adreça d'un client
     def register_client(self, client):
+        # Comprovar que no estigui buit
+        if client.username.replace(" ", "") == "":
+            return (False, "El nom d'usuari no pot estar buit.")
         # Comprovar si ja hi ha un client connectat amb el mateix username
         if self.exists_client(client.username):
-            return False
+            return (False, "Aquest nom d'usuari ja està en ús actualment. Prova amb un altre.")
         self.redis_client.hset('clients', client.username, f"{client.ip}:{client.port}")
         # Imprimir log
         self.logger.log(f"Client registrat [username={client.username},ip={client.ip},port={client.port}]")
-        return True
+        return (True, "")
     
     
 name_server = NameServer()

@@ -17,11 +17,8 @@ class PrivateChat:
             self.queue.append(message)
         
     def receive_message(self, username):
-            with self.lock:
-                if self.queue and self.queue[0].username != username.username:
-                    return self.queue.pop(0)
-                else:
-                    return ""
-        
-    
-private_chat = PrivateChat()
+        with self.lock:
+            if self.queue and self.queue[0].username != username.username:
+                return self.queue.pop(0)
+            else:
+                return ""

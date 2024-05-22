@@ -6,8 +6,24 @@ message Client {
     int32 port = 3;
 }
 
+message ConnectionRequest {
+    string username = 1;
+    string others_username = 2;
+}
+
 message Boolean {
-    bool bool = 1;
+    bool done = 1;
+    string response = 2;
+}
+
+message AnswerRequest {
+    string username = 1;
+    string others_username = 2;
+    bool bool = 3;
+}
+
+message Response {
+    string text = 1;
 }
 
 message Message {
@@ -15,11 +31,26 @@ message Message {
     string body = 2;
 }
 
+message SendMessage {
+    string chat_id = 1;
+    string username = 2;
+    string body = 3;
+}
+
+message ReceiveMessage {
+    string chat_id = 1;
+    string username = 2;
+}
+
 message Empty {}
 
 service ChatServer {
     rpc RegisterClient(Client) returns (Boolean) {}
 
-    rpc SendMessage(Message) returns (Empty) {}
-    rpc ReceiveMessage(Client) returns (Message) {}
+    rpc ConnectChat(ConnectionRequest) returns (Boolean) {}
+    rpc ListenConnections(Client) returns (Client) {}
+    rpc AnswerConnection(AnswerRequest) returns (Boolean) {}
+
+    rpc SendMessageTo(SendMessage) returns (Empty) {}
+    rpc ReceiveMessageFrom(ReceiveMessage) returns (Message) {}
 }
