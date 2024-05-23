@@ -23,9 +23,13 @@ class Client:
         # Inicialitzar llista de chats privats oberts
         self.private_chats = set()
         
+        self.stop_thread = False
+        
         
     # Funció per obrir un chat privat (finestra, lectura i escriptura de missatges)
     def open_chat(self, chat_id, other):
+        
+        self.stop_thread = False
         
         # Funció per imprimir un missatge al chat
         def display_message(message, alignment):
@@ -65,23 +69,21 @@ class Client:
     
         # Funció per anar escoltant missatges
         def listen_messages():
-            while True:
+            while not self.stop_thread:
+                print("HOLA")
                 time.sleep(.5)
                 message = self.stub.ReceiveMessageFrom(chat_pb2.ReceiveMessage(chat_id=chat_id, username=self.username))
-                if message.username == "disconnect":
-                    entry_msg.destroy()
-                    send_btn.destroy()
-                    entry_label.destroy()
-                    Label(input_frame, text=f"{other} s'ha desconnectat del chat").pack()
-                    self.private_chats.remove(other)
-                elif message.body != "":
+                if message.body != "":
                     display_message(message.body, "left")
                     
         # Llançar thread per escoltar missatges
-        threading.Thread(target=listen_messages).start()
+        listen_thread = threading.Thread(target=listen_messages)
+        listen_thread.start()
         
         # Funció per alliberar el chat al tancar la finestra
         def close_chat():
+            self.stop_thread = True
+            listen_thread.join()
             if other in self.private_chats:
                 self.private_chats.remove(other)
                 self.stub.SendMessageTo(chat_pb2.SendMessage(chat_id=chat_id, username="disconnect"))
