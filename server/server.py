@@ -23,32 +23,37 @@ port = parser.parse_args().port
 
 class ServerServicer(chat_pb2_grpc.ChatServerServicer):
     
+    # Constructor
     def __init__(self):
         # Inicialitzar logger
         self.logger = ServerLog(self)
-        
+    
+    # Registrar client
     def RegisterClient(self, client, context):
         response = name_server.register_client(client)
         return chat_pb2.Boolean(done=response[0], response=response[1])
 
+    # Sol·licitar chat privat
     def ConnectChat(self, request, context):
         response = message_broker.connect_chat(request)
-        if "id=" in response:
-            return chat_pb2.Boolean(done=True, response=response.split("=")[1])
-        return chat_pb2.Boolean(done=False, response=response)
+        return chat_pb2.Boolean(done=response[0], response=response[1])
     
+    # Escoltar peticions de chat
     def ListenConnections(self, request, context):
         username = message_broker.listen_connections(request)
         return chat_pb2.Client(username=username)
     
+    # Contestar una petició
     def AnswerConnection(self, request, context):
         response = message_broker.answer_connection(request)
         return chat_pb2.Boolean(response=response)
 
+    # Enviar missatge a un chat privat
     def SendMessageTo(self, send, context):
         message_broker.send_message_to(send=send)
         return chat_pb2.Empty()
     
+    # Rebre missatge d'un chat privat
     def ReceiveMessageFrom(self, receive, context):
         message = message_broker.receive_message_from(receive)
         response = chat_pb2.Message(username="")
@@ -56,6 +61,7 @@ class ServerServicer(chat_pb2_grpc.ChatServerServicer):
             response.username = message.username
             response.body = message.body
         return response
+
 
 # Crear servidor gRPC
 server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
