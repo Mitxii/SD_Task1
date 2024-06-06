@@ -2,6 +2,7 @@ import grpc
 import argparse
 from concurrent import futures
 import time
+import os
 
 # Importar classes generades
 from proto import chat_pb2
