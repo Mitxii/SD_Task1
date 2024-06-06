@@ -34,6 +34,9 @@ echo "server_port: $port" >> config.yaml
 PROTO_ABS_DIR=$(realpath "./proto")
 export PYTHONPATH="$PROTO_ABS_DIR:$PYTHONPATH"
 
+# Iniciar RabbitMQ en un contenidor Docker
+gnome-terminal --title RabbitMQ -e "docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.13-management" 2> /dev/null
+
 # Engegar servidor
 gnome-terminal --title="SERVER" -- python3 server/server.py --port $port  2> /dev/null
 #python3 server/server.py --port $port
