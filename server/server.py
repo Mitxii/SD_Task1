@@ -1,6 +1,5 @@
 import grpc
 import argparse
-import uuid
 from concurrent import futures
 import time
 

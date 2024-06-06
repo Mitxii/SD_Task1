@@ -68,16 +68,23 @@ class Client:
         chat_display.configure(padx=10, pady=10)
     
         # Funció per anar escoltant missatges
-        def listen_messages():
+        def listen_messages(input_frame):
             while not self.stop_thread:
-                print("HOLA")
                 time.sleep(.5)
                 message = self.stub.ReceiveMessageFrom(chat_pb2.ReceiveMessage(chat_id=chat_id, username=self.username))
-                if message.body != "":
+                if message.username == "disconnect":
+                    for widget in input_frame.winfo_children():
+                        widget.destroy()
+                    Label(input_frame, text="- L'altre usuari s'ha desconnectat del chat -").pack()
+                    self.stub.SendMessageTo(chat_pb2.SendMessage(chat_id=chat_id, username="close_chat"))
+                    if other in self.private_chats:
+                        self.private_chats.remove(other)
+                    return                    
+                elif message.body != "":
                     display_message(message.body, "left")
                     
         # Llançar thread per escoltar missatges
-        listen_thread = threading.Thread(target=listen_messages)
+        listen_thread = threading.Thread(target=listen_messages, args=(input_frame,))
         listen_thread.start()
         
         # Funció per alliberar el chat al tancar la finestra

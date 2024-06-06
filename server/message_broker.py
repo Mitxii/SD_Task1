@@ -1,5 +1,4 @@
 import colorama
-import threading
 import uuid
 import time
 
@@ -97,6 +96,12 @@ class MessageBroker:
     # Funció per enviar un missatge a un chat privat
     def send_message_to(self, send):
         self.private_chats[send.chat_id].send_message(send)
+        if send.username == "close_chat":
+            self.private_chats.pop(send.chat_id)
+            if send.chat_id in self.private_chats:
+                self.logger.error(f"No s'ha pogut eliminar el chat {colorama.Fore.YELLOW + send.chat_id + colorama.Fore.RESET}")
+            else:
+                self.logger.success(f"Chat {colorama.Fore.YELLOW + send.chat_id + colorama.Fore.RESET} eliminat correctament")
         
         
     # Funció per rebre un missatge d'un chat privat
