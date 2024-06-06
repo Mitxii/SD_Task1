@@ -25,6 +25,13 @@ class Client:
         
         self.stop_thread = False
         
+    
+    # Funció per enviar una senyal indicant que segueix actiu
+    def heartbeat(self):
+        while True:
+            self.stub.Heartbeat(chat_pb2.Client(username=self.username))
+            time.sleep(2)
+        
         
     # Funció per obrir un chat privat (finestra, lectura i escriptura de missatges)
     def open_chat(self, chat_id, other):

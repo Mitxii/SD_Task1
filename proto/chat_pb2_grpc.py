@@ -19,6 +19,11 @@ class ChatServerStub(object):
                 request_serializer=proto_dot_chat__pb2.Client.SerializeToString,
                 response_deserializer=proto_dot_chat__pb2.Boolean.FromString,
                 )
+        self.Heartbeat = channel.unary_unary(
+                '/ChatServer/Heartbeat',
+                request_serializer=proto_dot_chat__pb2.Client.SerializeToString,
+                response_deserializer=proto_dot_chat__pb2.Empty.FromString,
+                )
         self.ConnectChat = channel.unary_unary(
                 '/ChatServer/ConnectChat',
                 request_serializer=proto_dot_chat__pb2.ConnectionRequest.SerializeToString,
@@ -50,6 +55,12 @@ class ChatServerServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def RegisterClient(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def Heartbeat(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -92,6 +103,11 @@ def add_ChatServerServicer_to_server(servicer, server):
                     servicer.RegisterClient,
                     request_deserializer=proto_dot_chat__pb2.Client.FromString,
                     response_serializer=proto_dot_chat__pb2.Boolean.SerializeToString,
+            ),
+            'Heartbeat': grpc.unary_unary_rpc_method_handler(
+                    servicer.Heartbeat,
+                    request_deserializer=proto_dot_chat__pb2.Client.FromString,
+                    response_serializer=proto_dot_chat__pb2.Empty.SerializeToString,
             ),
             'ConnectChat': grpc.unary_unary_rpc_method_handler(
                     servicer.ConnectChat,
@@ -142,6 +158,23 @@ class ChatServer(object):
         return grpc.experimental.unary_unary(request, target, '/ChatServer/RegisterClient',
             proto_dot_chat__pb2.Client.SerializeToString,
             proto_dot_chat__pb2.Boolean.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def Heartbeat(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/ChatServer/Heartbeat',
+            proto_dot_chat__pb2.Client.SerializeToString,
+            proto_dot_chat__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

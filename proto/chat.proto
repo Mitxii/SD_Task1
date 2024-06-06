@@ -46,6 +46,7 @@ message Empty {}
 
 service ChatServer {
     rpc RegisterClient(Client) returns (Boolean) {}
+    rpc Heartbeat(Client) returns (Empty) {}
 
     rpc ConnectChat(ConnectionRequest) returns (Boolean) {}
     rpc ListenConnections(Client) returns (Client) {}

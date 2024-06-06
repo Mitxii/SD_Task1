@@ -36,7 +36,7 @@ class ServerLog:
     def error(self, error):
         timestamp = self.get_timestamp()
         if self.source != "ServerServicer":
-            print(f"{self.back_color + timestamp}[{self.source}]{colorama.Back.RESET}{colorama.Back.RED} ✖ {colorama.Back.RESET} {error}")
+            print(f"{colorama.Back.RED} ✖ {colorama.Back.RESET}{self.back_color + timestamp}[{self.source}]{colorama.Back.RESET} {error}")
         else:
             print(f"{colorama.Back.CYAN + timestamp}[Server]{colorama.Back.RESET}{colorama.Back.RED} ✖ {colorama.Back.RESET} {error}")
             
@@ -45,6 +45,6 @@ class ServerLog:
     def success(self, succ):
         timestamp = self.get_timestamp()
         if self.source != "ServerServicer":
-            print(f"{self.back_color + timestamp}[{self.source}]{colorama.Back.RESET}{colorama.Back.GREEN} ✔ {colorama.Back.RESET} {succ}")
+            print(f"{colorama.Back.GREEN} ✔ {colorama.Back.RESET}{self.back_color + timestamp}[{self.source}]{colorama.Back.RESET} {succ}")
         else:
             print(f"{colorama.Back.CYAN + timestamp}[Server]{colorama.Back.RESET}{colorama.Back.GREEN} ✔ {colorama.Back.RESET} {succ}")

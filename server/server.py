@@ -31,6 +31,11 @@ class ServerServicer(chat_pb2_grpc.ChatServerServicer):
     def RegisterClient(self, client, context):
         response = name_server.register_client(client)
         return chat_pb2.Boolean(done=response[0], response=response[1])
+    
+    # Enviar senyal per indicar que un client segueix connectat
+    def Heartbeat(self, client, context):
+        name_server.heartbeat(client)
+        return chat_pb2.Empty()
 
     # Sol·licitar chat privat
     def ConnectChat(self, request, context):

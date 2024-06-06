@@ -56,6 +56,8 @@ os.system("cls" if os.name == "nt" else "clear")
 
 # Escoltar peticions de chats privats
 threading.Thread(target=client.listen_connections).start()
+# Enviar senyals mentre segueixi actiu
+threading.Thread(target=client.heartbeat).start()
 
 os.system(f"echo 'Bones, \033[33m{username}\\033]0;{username}\\007\033[0m!'")
 print(f"\n\t{colorama.Back.YELLOW + colorama.Fore.BLACK} [P]rivat | [G]rupal | [D]escobrir | [I]nsults | [S]ortir {colorama.Back.RESET + colorama.Fore.RESET}\n")
