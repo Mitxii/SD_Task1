@@ -1,4 +1,5 @@
 import grpc
+import pika
 import colorama
 import yaml
 import argparse
@@ -21,7 +22,8 @@ colorama.init()
 with open("config.yaml", "r") as config_file:
     config = yaml.safe_load(config_file)
 server_ip = config["server_ip"]
-server_port = config["server_port"]
+grpc_port = config["server_grpc_port"]
+rabbit_port = config["server_rabbit_port"]
 
 # Crear l'analitzador d'arguments per obtenir l'adreça del client (ip:port)
 parser = argparse.ArgumentParser()
@@ -31,7 +33,7 @@ ip = parser.parse_args().ip
 port = parser.parse_args().port
 
 # Obrir canal gRPC i crear un stub
-channel = grpc.insecure_channel(f"{server_ip}:{server_port}")
+channel = grpc.insecure_channel(f"{server_ip}:{grpc_port}")
 stub = chat_pb2_grpc.ChatServerStub(channel)
 
 # Bucle per obtenir un nom d'usuari disponible
@@ -54,6 +56,11 @@ while True:
 time.sleep(0.5)
 os.system("cls" if os.name == "nt" else "clear")
 
+# Obrir connexió amb el servidor RabbitMQ
+parameters = pika.ConnectionParameters(host=server_ip, port=rabbit_port)
+connection = pika.BlockingConnection(parameters)
+rabbit = connection.channel()
+
 # Escoltar peticions de chats privats
 threading.Thread(target=client.listen_connections).start()
 # Enviar senyals mentre segueixi actiu
@@ -73,6 +80,7 @@ while True:
             break
         
         case "D":
+            client.discover_chats()
             break
         
         case "I":

@@ -2,7 +2,6 @@ import grpc
 import argparse
 from concurrent import futures
 import time
-import os
 
 # Importar classes generades
 from proto import chat_pb2
@@ -12,7 +11,6 @@ from server_log import ServerLog
 # Importar altres classes
 from name_server import name_server
 from message_broker import message_broker
-import private_chat
 
 # Crear l'analitzador d'arguments
 parser = argparse.ArgumentParser()

@@ -28,14 +28,21 @@ ip=$(hostname -I | awk '{print $1}')
 
 # Guardar variables al fitxer config
 echo "server_ip: $ip" > config.yaml
-echo "server_port: $port" >> config.yaml
+echo "server_grpc_port: $port" >> config.yaml
+echo "server_rabbit_port: 5672" >> config.yaml
 
 # Agregar directori 'proto' al sys.path
 PROTO_ABS_DIR=$(realpath "./proto")
 export PYTHONPATH="$PROTO_ABS_DIR:$PYTHONPATH"
 
+# Aturar contenidor RabbitMQ en cas de que estigui encés
+docker stop rabbitmq > /dev/null 2>&1
+
 # Iniciar RabbitMQ en un contenidor Docker
 gnome-terminal --title RabbitMQ -e "docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.13-management" 2> /dev/null
+
+# Canviar entorn python
+source venv/bin/activate
 
 # Funció per aturar el contenidor docker del RabbitMQ al tancar el servidor
 check_server_stop() {
@@ -43,7 +50,7 @@ check_server_stop() {
         if ! ps aux | grep -v grep | grep server.py > /dev/null
         then
             docker stop rabbitmq
-            exit 1
+            break
         fi
     done
 }

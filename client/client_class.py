@@ -1,3 +1,4 @@
+import json
 import time
 import colorama
 import threading
@@ -24,7 +25,7 @@ class Client:
         self.private_chats = set()
         # Variable per aturar el thread que escolta missatges
         self.stop_listen_mess_thread = False
-        
+                        
     
     # Funció per enviar una senyal indicant que segueix actiu
     def heartbeat(self):
