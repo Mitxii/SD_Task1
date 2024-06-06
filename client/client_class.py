@@ -22,8 +22,8 @@ class Client:
         self.stub = stub
         # Inicialitzar llista de chats privats oberts
         self.private_chats = set()
-        
-        self.stop_thread = False
+        # Variable per aturar el thread que escolta missatges
+        self.stop_listen_mess_thread = False
         
     
     # Funció per enviar una senyal indicant que segueix actiu
@@ -36,7 +36,8 @@ class Client:
     # Funció per obrir un chat privat (finestra, lectura i escriptura de missatges)
     def open_chat(self, chat_id, other):
         
-        self.stop_thread = False
+        # Inicialitzar variables
+        self.stop_listen_mess_thread = False
         
         # Funció per imprimir un missatge al chat
         def display_message(message, alignment):
@@ -76,17 +77,22 @@ class Client:
     
         # Funció per anar escoltant missatges
         def listen_messages(input_frame):
-            while not self.stop_thread:
+            while not self.stop_listen_mess_thread:
                 time.sleep(.5)
                 message = self.stub.ReceiveMessageFrom(chat_pb2.ReceiveMessage(chat_id=chat_id, username=self.username))
+                # Si el username del que ha enviat el missatge és 'disconnect' (ha tancat el chat)...
                 if message.username == "disconnect":
+                    # Eliminar tots els elements del frame per als inputs
                     for widget in input_frame.winfo_children():
                         widget.destroy()
-                    Label(input_frame, text="- L'altre usuari s'ha desconnectat del chat -").pack()
+                    # Crear un nou missatge per notificar la desconnexió de l'altre client
+                    Label(input_frame, text="** L'altre usuari s'ha desconnectat del chat **").pack()
                     self.stub.SendMessageTo(chat_pb2.SendMessage(chat_id=chat_id, username="close_chat"))
+                    # Eliminar l'altre client de la llista de chats privats actius
                     if other in self.private_chats:
                         self.private_chats.remove(other)
-                    return                    
+                    return      
+                # Si és un missatge normal...              
                 elif message.body != "":
                     display_message(message.body, "left")
                     
@@ -96,11 +102,15 @@ class Client:
         
         # Funció per alliberar el chat al tancar la finestra
         def close_chat():
-            self.stop_thread = True
+            # Parar d'escoltar missatges
+            self.stop_listen_mess_thread = True
             listen_thread.join()
+            # Eliminar l'altre client de la llista de chats privats actius
             if other in self.private_chats:
                 self.private_chats.remove(other)
+                # Enviar missatge per indicar a l'altre client la desconnexió
                 self.stub.SendMessageTo(chat_pb2.SendMessage(chat_id=chat_id, username="disconnect"))
+            # Tancar finestra del chat
             root.destroy()
         root.protocol("WM_DELETE_WINDOW", close_chat)
 
@@ -113,14 +123,18 @@ class Client:
         
         # Funció per sol·licitar el chat
         def connect(ctx=False):
+            # Deshabilitar el botó de connectar per a no duplicar peticions
             button["text"] = "Connectant..."
             root.update()
             other = entry.get()
+            # Si ja hi ha un chat privat amb el client especificat...
             if other in self.private_chats:
                 messagebox.showerror("Error", "Ja tens un chat obert amb aquest client.")
                 entry.delete(0, END)
+                # Tornar a habilitar el botó de connexió i acabar la funció
                 button["text"] = "Connectar"
                 return
+            # Si no, sol·licitar connexió
             response = self.stub.ConnectChat(chat_pb2.ConnectionRequest(username=self.username, others_username=other))
             if not response.done:
                 messagebox.showerror("Error", response.response)
@@ -128,6 +142,7 @@ class Client:
                 button["text"] = "Connectar"
             else:
                 root.destroy()
+                # Registrar l'altre client a la llista de chats privats actius i obrir la finestra del chat
                 self.private_chats.add(other)
                 threading.Thread(target=self.open_chat, args=(response.response, other,)).start()
 
